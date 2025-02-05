@@ -3,28 +3,47 @@ package com.example.itmo.extended.controllers;
 import com.example.itmo.extended.model.dto.request.UserInfoReq;
 import com.example.itmo.extended.model.dto.response.UserInfoResp;
 import com.example.itmo.extended.model.enums.Gender;
+import com.example.itmo.extended.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
 
-    @GetMapping
-    public UserInfoResp getUser() {
-        return UserInfoResp.builder()
-                .id(1L)
-                .email("test@test.ru")
-                .age(40)
-                .firstName("Ivan")
-                .lastName("Ivanov")
-                .middleName("Ivanovich")
-                .gender(Gender.MALE)
-                .password("12345")
-                .build();
+    @GetMapping("/{id}")
+    public UserInfoResp getUser(@PathVariable Long id) {
+        return userService.getUser(id);
     }
 
     @PostMapping
-    public UserInfoReq addUser(@RequestBody UserInfoReq req) {
-        return req;
+    public UserInfoResp addUser(@RequestBody UserInfoReq req) {
+        return userService.addUser(req);
     }
+
+    @PutMapping("/{id}")
+    public UserInfoResp updateUser(@PathVariable Long id, @RequestBody UserInfoReq req) {
+        return userService.updateUser(id, req);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
+
+    @GetMapping("/all")
+    public List<UserInfoResp> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping
+    public UserInfoResp getUserWithParams(@RequestParam(required = false) String email, @RequestParam String lastName) {
+        return userService.getUser(email, lastName);
+    }
+
 }

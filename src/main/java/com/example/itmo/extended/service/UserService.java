@@ -15,6 +15,4 @@ public interface UserService {  // для межмодульной архите�
     void deleteUser(Long id);
 
     List<UserInfoResp> getAllUsers();
-
-    UserInfoResp getUser(String email, String lastName);
 }

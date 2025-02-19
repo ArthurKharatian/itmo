@@ -1,6 +1,7 @@
 package com.example.itmo.extended.model.dto.request;
 
 import com.example.itmo.extended.model.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldNameConstants
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserInfoReq {
    @NotEmpty
 //   @Size(min = 10, max = 200)

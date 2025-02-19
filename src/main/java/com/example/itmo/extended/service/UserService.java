@@ -22,4 +22,6 @@ public interface UserService {  // для межмодульной архите�
     Page<UserInfoResp> getAllUsers(Integer page, Integer perPage, String sort, Sort.Direction order, String filter);
 
     User updateCarList(User userFromDB);
+
+    void invalidateSessions();
 }

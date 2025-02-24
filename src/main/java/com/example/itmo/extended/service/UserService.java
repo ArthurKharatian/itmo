@@ -6,12 +6,10 @@ import com.example.itmo.extended.model.dto.response.UserInfoResp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
-
 public interface UserService {  // для межмодульной архитектуры
     UserInfoResp addUser(UserInfoReq req);
 
-    UserInfoResp getUser(Long id);
+    UserInfoResp getUser(String apiKey, Long id);
 
     User getUserFromDB(Long id);
 
@@ -24,4 +22,6 @@ public interface UserService {  // для межмодульной архите�
     User updateCarList(User userFromDB);
 
     void invalidateSessions();
+
+    UserInfoResp getYaUser(Long id, String apiKey);
 }

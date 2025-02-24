@@ -1,5 +1,6 @@
 package com.example.itmo.extended.service.impl;
 
+import com.example.itmo.extended.clients.RemoteClient;
 import com.example.itmo.extended.exception.CommonBackendException;
 import com.example.itmo.extended.model.db.entity.User;
 import com.example.itmo.extended.model.db.repository.UserRepository;
@@ -12,17 +13,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.itmo.extended.config.secret.Constants.validateKey;
 
 @Slf4j
 @Service
@@ -32,6 +37,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 //    private final CarRepository carRepository; - некорректно
 //    private final CarService carService;  ошибка с цикличной зависимостью
+
+    private final RemoteClient remoteClient;
+
+    @Value("${app.base-url:itmo.ru}")
+    private String baseUrl;
 
     @Override
     public UserInfoResp addUser(UserInfoReq req) {
@@ -52,7 +62,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResp getUser(Long id) {
+    public UserInfoResp getUser(String apiKey, Long id) {
+        validateKey(apiKey);
         User user = getUserFromDB(id);
 //        if (optionalUser.isPresent()) {
 //            return mapper.convertValue(optionalUser.get(), UserInfoResp.class);
@@ -147,6 +158,18 @@ public class UserServiceImpl implements UserService {
 
         String email = UserInfoReq.Fields.email;
         String age = UserInfoReq.Fields.age;
+    }
+
+    @Override
+    public UserInfoResp getYaUser(Long id, String apiKey) {
+        ResponseEntity<UserInfoResp> yaUserResp = remoteClient.getYaUser(id, apiKey);
+
+        if (yaUserResp.getStatusCode().is2xxSuccessful()) {
+            return yaUserResp.getBody();
+        } else {
+            String resp = yaUserResp.toString();
+            throw new CommonBackendException(resp, HttpStatus.valueOf(yaUserResp.getStatusCode().value()));
+        }
     }
 
 }

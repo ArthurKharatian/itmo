@@ -19,7 +19,7 @@ public class JobService {
     }
 
 
-    @Scheduled(fixedDelay = 3000)
+//    @Scheduled(fixedDelay = 3000)
     public void sendMsg() {
         String msg = "test" + counter++ + "@yandex.ru";
         log.info(msg);

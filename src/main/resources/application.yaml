@@ -17,3 +17,7 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+
+
+app:
+  base-url: ${BASE_URL_HOST:itmo.ru}
